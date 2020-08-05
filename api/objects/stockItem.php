@@ -162,8 +162,38 @@ class StockItem{
                 return false;
             }
         }catch (PDOException $e){
+                $this->response['status'] = 'fail';
+                $this->response['message'] = 'Fallo al actualizar';
+                $this->response['data'] = $e;
+            return false;
+        }
+    }
+    function delete () {
+        $query = "DELETE FROM " . $this->table_name . "
+        WHERE id_stock = :id_stock
+        ";
+
+    // prepare the query
+        $stmt = $this->conn->prepare($query);
+
+    // sanitize
+        $this->id_stock=htmlspecialchars(strip_tags($this->id_stock));
+    // bind the values
+        $stmt->bindParam(':id_stock', $this->id_stock,PDO::PARAM_INT);
+    // execute the query, also check if query was successful
+        try {
+            if ($stmt->execute()){
                 $this->response['status'] = 'success';
-                $this->response['message'] = 'Dato actualizado';
+                $this->response['message'] = 'Dato eliminado';
+                return true;
+            }else{
+                $this->response['status'] = 'fail';
+                $this->response['message'] = 'Fallo al eliminar';    
+                return false;
+            }
+        }catch (PDOException $e){
+                $this->response['status'] = 'fail';
+                $this->response['message'] = 'Fallo al eliminar';
                 $this->response['data'] = $e;
             return false;
         }

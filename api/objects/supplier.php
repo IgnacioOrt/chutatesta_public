@@ -4,19 +4,13 @@ class Supplier{
  
     // database connection and table name
     private $conn;
-    private $table_name = "stock";
+    private $table_name = "supplier";
  
     // object properties
-    public $id_stock;
+    public $id_supplier;
     public $nombre;
-    public $descripcion;
-    public $cantidad;
-    public $precio;
-    public $id_proveedor;
-    public $fecha_de_compra;
-    public $fecha_de_caducidad;
-    public $dias_de_soporte;
-    public $unidad_de_medida; 
+    public $direccion;
+    public $telefono;
     public $response;
 
     // constructor
@@ -30,42 +24,40 @@ class Supplier{
         $query = "INSERT INTO " . $this->table_name . "
         SET
         nombre = :nombre,
-        descripcion = :descripcion,
-        precio = :precio,
-        id_proveedor = :id_proveedor,
-        dias_de_soporte = :dias_de_soporte,
-        unidad_de_medida = :unidad_de_medida";
+        direccion = :direccion,
+        telefono = :telefono";
 
     // prepare the query
         $stmt = $this->conn->prepare($query);
 
     // sanitize
         $this->nombre=htmlspecialchars(strip_tags($this->nombre));
-        $this->descripcion=htmlspecialchars(strip_tags($this->descripcion));
-        $this->precio=htmlspecialchars(strip_tags($this->precio));
-        $this->id_proveedor=htmlspecialchars(strip_tags($this->id_proveedor));
-        $this->dias_de_soporte=htmlspecialchars(strip_tags($this->dias_de_soporte));
-        $this->unidad_de_medida=htmlspecialchars(strip_tags($this->unidad_de_medida));
+        $this->direccion=htmlspecialchars(strip_tags($this->direccion));
+        $this->telefono=htmlspecialchars(strip_tags($this->telefono));
 
     // bind the values
         $stmt->bindParam(':nombre', $this->nombre);
-        $stmt->bindParam(':descripcion', $this->descripcion);
-        $stmt->bindParam(':precio', $this->precio);
-        $stmt->bindParam(':id_proveedor', $this->id_proveedor);
-        $stmt->bindParam(':dias_de_soporte', $this->dias_de_soporte);
-        $stmt->bindParam(':unidad_de_medida', $this->unidad_de_medida);
-    // execute the query, also check if query was successful
+        $stmt->bindParam(':direccion', $this->direccion);
+        $stmt->bindParam(':telefono', $this->telefono);
         try {
             if ($stmt->execute()){
+                $this->response['status'] = 'success';
+                $this->response['message'] = 'Proveedor creado';
                 return true;
+            }else{
+                $this->response['status'] = 'fail';
+                $this->response['message'] = 'Fallo al crear proveedor';    
+                return false;
             }
-            return false;
         }catch (PDOException $e){
-            return $e;
+                $this->response['status'] = 'fail';
+                $this->response['message'] = 'Fallo al crear proveedor';
+                $this->response['data'] = $e;
+            return false;
         }
     }
 
-    function getStock()
+    function getSuppliers()
     {
         $query = "SELECT * FROM ". $this->table_name;
 

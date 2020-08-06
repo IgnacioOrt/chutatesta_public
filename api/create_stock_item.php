@@ -30,7 +30,15 @@ if (!isset($data)) {
 	));
 	die();	
 }
+if (!isset($data->nombre)){
+	http_response_code(400);
 
+	echo json_encode(array(
+		"status" => "fail",
+		"message" => "El nombre es obligatorio"
+	));
+	die();
+}
 if ($data->nombre == ''){
 	http_response_code(400);
 
@@ -40,13 +48,18 @@ if ($data->nombre == ''){
 	));
 	die();
 }
+
 // set product property values
-$stockItem->nombre = $data->nombre;
-$stockItem->descripcion = $data->descripcion;
-$stockItem->precio = $data->precio;
-$stockItem->id_proveedor = $data->id_proveedor;
-$stockItem->dias_de_soporte = $data->dias_de_soporte;
-$stockItem->unidad_de_medida = $data->unidad_de_medida;
+$stockItem->nombre = $data->nombre ;
+$stockItem->descripcion = isset($data->descripcion) ? $data->descripcion : '';
+$stockItem->cantidad = isset($data->cantidad) ? $data->cantidad : '';
+$stockItem->precio = isset($data->precio) ? $data->precio : '';
+$stockItem->id_proveedor = isset($data->id_proveedor) ? $data->id_proveedor : '';
+$stockItem->fecha_de_compra = isset($data->fecha_de_compra) ? $data->fecha_de_compra : '';
+$stockItem->fecha_de_caducidad = isset($data->fecha_de_caducidad) ? $data->id_proveedor : '';
+$stockItem->dias_de_soporte = isset($data->dias_de_soporte) ? $data->dias_de_soporte : '';
+$stockItem->unidad_de_medida = isset($data->unidad_de_medida) ? $data->unidad_de_medida : '';
+
 
 
 // create the user

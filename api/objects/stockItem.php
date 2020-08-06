@@ -31,8 +31,11 @@ class StockItem{
         SET
         nombre = :nombre,
         descripcion = :descripcion,
+        cantidad = :cantidad,
         precio = :precio,
         id_proveedor = :id_proveedor,
+        fecha_de_compra = :fecha_de_compra,
+        fecha_de_caducidad = :fecha_de_caducidad,
         dias_de_soporte = :dias_de_soporte,
         unidad_de_medida = :unidad_de_medida";
 
@@ -42,18 +45,48 @@ class StockItem{
     // sanitize
         $this->nombre=htmlspecialchars(strip_tags($this->nombre));
         $this->descripcion=htmlspecialchars(strip_tags($this->descripcion));
+        $this->cantidad=htmlspecialchars(strip_tags($this->cantidad));
         $this->precio=htmlspecialchars(strip_tags($this->precio));
         $this->id_proveedor=htmlspecialchars(strip_tags($this->id_proveedor));
+        $this->fecha_de_compra=htmlspecialchars(strip_tags($this->fecha_de_compra));
+        $this->fecha_de_caducidad=htmlspecialchars(strip_tags($this->fecha_de_caducidad));
         $this->dias_de_soporte=htmlspecialchars(strip_tags($this->dias_de_soporte));
         $this->unidad_de_medida=htmlspecialchars(strip_tags($this->unidad_de_medida));
-
     // bind the values
-        $stmt->bindParam(':nombre', $this->nombre);
-        $stmt->bindParam(':descripcion', $this->descripcion);
-        $stmt->bindParam(':precio', $this->precio);
-        $stmt->bindParam(':id_proveedor', $this->id_proveedor);
-        $stmt->bindParam(':dias_de_soporte', $this->dias_de_soporte);
-        $stmt->bindParam(':unidad_de_medida', $this->unidad_de_medida);
+        $nullParam = NULL;
+        //Nombre
+        $stmt->bindParam(':nombre', $this->nombre, PDO::PARAM_STR);
+        //Descripcion
+        $stmt->bindParam(':descripcion', $this->descripcion, PDO::PARAM_STR);
+        //Cantidad
+        $stmt->bindParam(':cantidad', $this->descripcion, PDO::PARAM_INT);
+        //Precio
+        $this->precio == '' ?
+            $stmt->bindParam(':precio', $this->precio, PDO::PARAM_INT)
+        :
+            $stmt->bindParam(':precio', $this->precio, PDO::PARAM_STR );
+        //Id proveedor
+        $this->id_proveedor == '' ?
+            $stmt->bindParam(':id_proveedor', $nullParam,PDO::PARAM_NULL)
+        :
+            $stmt->bindParam(':id_proveedor', $this->id_proveedor,PDO::PARAM_INT);
+        //Fecha de compra
+        $this->fecha_de_compra == '' ?
+            $stmt->bindParam(':fecha_de_compra', $nullParam,PDO::PARAM_NULL)
+        :
+            $stmt->bindParam(':fecha_de_compra', $this->fecha_de_compra);
+        //Fecha de expiracion
+        $this->fecha_de_caducidad == '' ?
+            $stmt->bindParam(':fecha_de_caducidad', $nullParam,PDO::PARAM_NULL)
+        :
+            $stmt->bindParam(':fecha_de_caducidad', $this->fecha_de_caducidad);
+        //Dias de soporte
+        $stmt->bindParam(':dias_de_soporte', $this->dias_de_soporte,PDO::PARAM_INT);
+        //Unidad de medida
+        $this->unidad_de_medida == '' ?
+            $stmt->bindParam(':unidad_de_medida', $nullParam,PDO::PARAM_NULL)
+        :
+            $stmt->bindParam(':unidad_de_medida', $this->unidad_de_medida);
     // execute the query, also check if query was successful
         try {
             if ($stmt->execute()){
